@@ -41,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $nowServing = $pdo->query("SELECT qt.ticket_id, qt.queue_no, qt.arrival_at, p.name FROM queue_tickets qt JOIN patients p ON p.patient_id = qt.patient_id WHERE qt.status = 'serving' LIMIT 1")->fetch();
 $waiting = $pdo->query("SELECT qt.ticket_id, qt.queue_no, qt.source, qt.arrival_at, p.name FROM queue_tickets qt JOIN patients p ON p.patient_id = qt.patient_id WHERE qt.status = 'waiting' ORDER BY qt.arrival_at ASC")->fetchAll();
+$completed = $pdo->query("SELECT qt.queue_no, p.name, qt.arrival_at FROM queue_tickets qt JOIN patients p ON p.patient_id = qt.patient_id WHERE qt.status = 'completed' ORDER BY qt.arrival_at DESC LIMIT 10")->fetchAll();
 ?>
 <!DOCTYPE html>
 <html>
@@ -48,14 +49,12 @@ $waiting = $pdo->query("SELECT qt.ticket_id, qt.queue_no, qt.source, qt.arrival_
     <title>Clinician Dashboard - MediQueue</title>
     <style>
         * { box-sizing: border-box; }
-        /* MATCHED APP THEME */
-        body { font-family: Arial; margin: 0; background: #f4f6f9; } 
+        body { font-family: Arial; margin: 0; background: #f4f6f9; }
         .header { background: #0d1b8f; color: white; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; }
         .header h1 { margin: 0; font-size: 20px; }
         .header a { color: white; text-decoration: none; background: rgba(255,255,255,0.2); padding: 8px 15px; border-radius: 5px; }
         .layout { display: flex; min-height: calc(100vh - 55px); }
         
-        /* MATCHED SIDEBAR */
         .sidebar { width: 220px; background: #37474f; padding: 20px 0; }
         .sidebar a { display: block; color: white; text-decoration: none; padding: 14px 20px; font-size: 14px; }
         .sidebar a:hover, .sidebar a.active { background: #263238; }
@@ -66,26 +65,23 @@ $waiting = $pdo->query("SELECT qt.ticket_id, qt.queue_no, qt.source, qt.arrival_
         .alert.success { background: #e8f5e9; color: #2e7d32; }
         .alert.error { background: #ffebee; color: #c62828; }
 
-        .panel { background: white; padding: 20px; width: 100%; max-width: 600px; margin-bottom: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); border-radius: 8px;}
+        .panel { background: white; padding: 20px; width: 100%; max-width: 600px; margin-bottom: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); border-radius: 8px; scroll-margin-top: 20px;}
         
         .now-serving h3 { margin: 0 0 10px 0; font-size: 16px; font-weight: bold; color: #666; text-transform: uppercase;}
         .now-serving p { margin: 0; font-size: 16px; }
         .now-serving .qno { font-size: 24px; font-weight: bold; margin-right: 10px; color: #0d1b8f;}
 
-        .waiting-list h3 { margin: 0 0 10px 0; font-size: 18px; font-weight: bold; color: #0d1b8f; text-align: center; }
+        .panel h3 { margin: 0 0 10px 0; font-size: 18px; font-weight: bold; color: #0d1b8f; text-align: center; }
         table { width: 100%; border-collapse: collapse; text-align: center; }
         th, td { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; }
         th { background: #f9f9f9; font-weight: bold; color: #666; text-transform: uppercase; font-size: 12px;}
 
-        /* Bottom Buttons */
         .action-buttons { display: flex; gap: 10px; width: 100%; max-width: 600px; margin-top: auto; padding-top: 20px;}
         .action-buttons form { flex: 1; }
         .action-buttons button { width: 100%; color: white; padding: 15px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px; }
         
         .btn-blue { background: #0d1b8f; }
         .btn-blue:hover { background: #0a1466; }
-        
-        /* Made permanently green as requested */
         .btn-green { background: #2e7d32; }
         .btn-green:hover { background: #1b5e20; }
     </style>
@@ -98,9 +94,10 @@ $waiting = $pdo->query("SELECT qt.ticket_id, qt.queue_no, qt.source, qt.arrival_
     <div class="layout">
         <div class="sidebar">
             <a href="/Mediqueue/clinician/dashboard.php" class="active">Dashboard</a>
-            <a href="javascript:void(0);">Waiting List</a>
-            <a href="javascript:void(0);">Completed</a>
-            <a href="javascript:void(0);">Reports</a>
+            <a href="#waiting-list-section">Waiting List</a>
+            <a href="#completed-section">Completed</a>
+            <!-- This link is now updated -->
+            <a href="/Mediqueue/clinician/reports.php">Reports</a>
         </div>
         <div class="main">
             
@@ -118,7 +115,7 @@ $waiting = $pdo->query("SELECT qt.ticket_id, qt.queue_no, qt.source, qt.arrival_
             </div>
 
             <!-- Waiting List Panel -->
-            <div class="panel waiting-list">
+            <div class="panel" id="waiting-list-section">
                 <h3>Waiting List</h3>
                 <?php if (empty($waiting)): ?>
                     <p style="text-align:center; color:#999;">No patients waiting.</p>
@@ -139,6 +136,24 @@ $waiting = $pdo->query("SELECT qt.ticket_id, qt.queue_no, qt.source, qt.arrival_
                             <td><?= htmlspecialchars($w['name']) ?></td>
                             <td><?= ucfirst($w['source']) ?></td>
                             <td><?= $wait_display ?></td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </table>
+                <?php endif; ?>
+            </div>
+
+            <!-- Completed List Panel -->
+            <div class="panel" id="completed-section">
+                <h3>Completed Today</h3>
+                <?php if (empty($completed)): ?>
+                    <p style="text-align:center; color:#999;">No completed patients yet.</p>
+                <?php else: ?>
+                    <table>
+                        <tr><th>Queue No</th><th>Patient Name</th></tr>
+                        <?php foreach ($completed as $c): ?>
+                        <tr>
+                            <td><strong><?= htmlspecialchars($c['queue_no']) ?></strong></td>
+                            <td><?= htmlspecialchars($c['name']) ?></td>
                         </tr>
                         <?php endforeach; ?>
                     </table>
