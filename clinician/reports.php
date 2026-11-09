@@ -5,7 +5,6 @@ require_once __DIR__ . '/../config/db.php';
 
 $u = current_user();
 
-// Fetch recent audit events
 $auditEvents = $pdo->query("
     SELECT a.event_time, a.event_type, u.name as user_name, qt.queue_no
     FROM audit_events a
@@ -19,6 +18,7 @@ $auditEvents = $pdo->query("
 <html>
 <head>
     <title>Clinician Reports - MediQueue</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230d1b8f'/><text x='50%' y='50%' font-size='45' font-family='Arial' font-weight='bold' fill='white' dominant-baseline='central' text-anchor='middle'>MQ</text></svg>">
     <style>
         * { box-sizing: border-box; }
         body { font-family: Arial; margin: 0; background: #f4f6f9; }

@@ -7,7 +7,6 @@ $u = current_user();
 $success = '';
 $error = '';
 
-// Handle Booking
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'book') {
     $patient_id = (int)($_POST['patient_id'] ?? 0);
     $date = $_POST['date'] ?? '';
@@ -29,7 +28,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     }
 }
 
-// Handle Cancel
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'cancel') {
     $appt_id = (int)($_POST['appt_id_cancel'] ?? 0);
     if ($appt_id > 0) {
@@ -40,7 +38,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     }
 }
 
-// Handle Reschedule
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'reschedule') {
     $appt_id = (int)($_POST['appt_id_resched'] ?? 0);
     $new_date = $_POST['new_date'] ?? '';
@@ -68,6 +65,7 @@ $appointments = $pdo->query("
 <html>
 <head>
     <title>Appointments - MediQueue</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230d1b8f'/><text x='50%' y='50%' font-size='45' font-family='Arial' font-weight='bold' fill='white' dominant-baseline='central' text-anchor='middle'>MQ</text></svg>">
     <style>
         * { box-sizing: border-box; }
         body { font-family: Arial; margin: 0; background: #f4f6f9; }
@@ -79,7 +77,7 @@ $appointments = $pdo->query("
         .sidebar a { display: block; color: white; text-decoration: none; padding: 14px 20px; font-size: 14px; }
         .sidebar a:hover, .sidebar a.active { background: #263238; }
         
-        .main { flex: 1; padding: 25px; display: flex; justify-content: center; gap: 20px; align-items: flex-start; }
+        .main { flex: 1; padding: 25px; display: flex; justify-content: center; gap: 20px; align-items: flex-start; flex-wrap: wrap;}
         
         .card { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); width: 100%; max-width: 450px; }
         h2 { margin-top: 0; font-size: 20px; text-align: center; margin-bottom: 20px;}
@@ -97,11 +95,10 @@ $appointments = $pdo->query("
         .btn-resched { background: #999; }
         .btn-cancel { background: #dc3545; }
         
-        /* Hidden sections that appear when buttons are clicked */
         .action-panel { display: none; background: #f8f9fa; border: 1px solid #ddd; padding: 15px; border-radius: 5px; margin-top: 15px;}
         .action-panel input { margin-bottom: 10px; }
 
-        .alert { padding: 12px 15px; border-radius: 6px; margin-bottom: 20px; max-width: 500px;}
+        .alert { padding: 12px 15px; border-radius: 6px; margin-bottom: 20px; width: 100%; max-width: 500px;}
         .alert.success { background: #e8f5e9; color: #2e7d32; }
         .alert.error { background: #ffebee; color: #c62828; }
 
@@ -141,11 +138,8 @@ $appointments = $pdo->query("
             <?php if ($success): ?><div class="alert success"><?= htmlspecialchars($success) ?></div><?php endif; ?>
             <?php if ($error): ?><div class="alert error"><?= htmlspecialchars($error) ?></div><?php endif; ?>
             
-            <!-- Left Side: The Form -->
             <div class="card">
                 <h2>Book Appointment</h2>
-                
-                <!-- MAIN BOOKING FORM -->
                 <form method="POST" id="bookForm">
                     <input type="hidden" name="action" value="book">
                     <div class="form-group">
@@ -164,13 +158,11 @@ $appointments = $pdo->query("
                     
                     <div class="btn-group">
                         <button type="submit" class="btn-book">Book Appointment</button>
-                        <!-- These buttons just toggle the hidden panels below -->
                         <button type="button" class="btn-resched" onclick="showPanel('reschedulePanel')">Reschedule</button>
                         <button type="button" class="btn-cancel" onclick="showPanel('cancelPanel')">Cancel</button>
                     </div>
                 </form>
 
-                <!-- HIDDEN RESCHEDULE FORM -->
                 <div id="reschedulePanel" class="action-panel">
                     <form method="POST">
                         <input type="hidden" name="action" value="reschedule">
@@ -184,7 +176,6 @@ $appointments = $pdo->query("
                     </form>
                 </div>
 
-                <!-- HIDDEN CANCEL FORM -->
                 <div id="cancelPanel" class="action-panel">
                     <form method="POST">
                         <input type="hidden" name="action" value="cancel">
@@ -196,7 +187,6 @@ $appointments = $pdo->query("
 
             </div>
 
-            <!-- Right Side: The Table -->
             <div class="table-card">
                 <h2>Upcoming Appointments</h2>
                 <?php if (empty($appointments)): ?>

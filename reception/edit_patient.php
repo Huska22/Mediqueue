@@ -10,7 +10,6 @@ $error = '';
 $id = (int)($_GET['id'] ?? 0);
 if ($id === 0) { die("Invalid Patient ID."); }
 
-// Handle Update
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = trim($_POST['name'] ?? '');
     $phone = trim($_POST['phone'] ?? '');
@@ -30,7 +29,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Fetch current data
 $stmt = $pdo->prepare("SELECT * FROM patients WHERE patient_id = ?");
 $stmt->execute([$id]);
 $patient = $stmt->fetch();
@@ -41,6 +39,7 @@ if (!$patient) { die("Patient not found."); }
 <html>
 <head>
     <title>Edit Patient - MediQueue</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230d1b8f'/><text x='50%' y='50%' font-size='45' font-family='Arial' font-weight='bold' fill='white' dominant-baseline='central' text-anchor='middle'>MQ</text></svg>">
     <style>
         * { box-sizing: border-box; }
         body { font-family: Arial; margin: 0; background: #f4f6f9; }

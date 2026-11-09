@@ -40,6 +40,7 @@ $patients = $pdo->query("SELECT patient_id, name, phone FROM patients ORDER BY n
 <html>
 <head>
     <title>Walk-in Queue - MediQueue</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230d1b8f'/><text x='50%' y='50%' font-size='45' font-family='Arial' font-weight='bold' fill='white' dominant-baseline='central' text-anchor='middle'>MQ</text></svg>">
     <style>
         * { box-sizing: border-box; }
         body { font-family: Arial; margin: 0; background: #f4f6f9; }
@@ -52,7 +53,6 @@ $patients = $pdo->query("SELECT patient_id, name, phone FROM patients ORDER BY n
         .sidebar a:hover, .sidebar a.active { background: #263238; }
         .main { flex: 1; padding: 25px; display: flex; justify-content: center; align-items: flex-start;}
         
-        /* Matching Canva Design */
         .card { background: white; width: 100%; max-width: 500px; padding: 40px 30px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); text-align: center; }
         h2 { margin-top: 0; margin-bottom: 25px; font-size: 24px; color: #000; }
         
@@ -74,7 +74,6 @@ $patients = $pdo->query("SELECT patient_id, name, phone FROM patients ORDER BY n
         .alert { padding: 12px 15px; border-radius: 6px; margin-bottom: 20px; }
         .alert.error { background: #ffebee; color: #c62828; }
         
-        /* Print styles to hide everything but the ticket when printing */
         @media print {
             body * { visibility: hidden; }
             .card, .card * { visibility: visible; }

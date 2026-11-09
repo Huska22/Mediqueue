@@ -25,16 +25,15 @@ $auditEvents = $pdo->query("
 <html>
 <head>
     <title>Reports & Audit - MediQueue</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230d1b8f'/><text x='50%' y='50%' font-size='45' font-family='Arial' font-weight='bold' fill='white' dominant-baseline='central' text-anchor='middle'>MQ</text></svg>">
     <style>
         * { box-sizing: border-box; }
-        /* MATCHED APP THEME: Background and Sidebar */
-        body { font-family: Arial; margin: 0; background: #f4f6f9; } 
+        body { font-family: Arial; margin: 0; background: #f4f6f9; }
         .header { background: #0d1b8f; color: white; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; }
         .header h1 { margin: 0; font-size: 20px; text-align: center; flex-grow: 1;}
         .header a { color: white; text-decoration: none; background: rgba(255,255,255,0.2); padding: 8px 15px; border-radius: 5px; }
         .layout { display: flex; min-height: calc(100vh - 55px); }
         
-        /* MATCHED APP THEME: Sidebar */
         .sidebar { width: 220px; background: #37474f; padding: 20px 0; }
         .sidebar a { display: block; color: white; text-decoration: none; padding: 14px 20px; font-size: 14px; }
         .sidebar a:hover, .sidebar a.active { background: #263238; }
@@ -46,7 +45,7 @@ $auditEvents = $pdo->query("
         
         .content { padding: 25px; display: flex; flex-direction: column; align-items: center; }
 
-        /* Summary Cards (Matched app theme: white box with shadow) */
+        /* Summary Cards */
         .cards { display: flex; gap: 15px; justify-content: center; width: 100%; max-width: 800px; margin-bottom: 25px; }
         .card { background: white; padding: 20px; border-radius: 8px; text-align: center; flex: 1; box-shadow: 0 2px 6px rgba(0,0,0,0.08); border: none; }
         .card h3 { margin: 0 0 10px; font-size: 14px; font-weight: bold; color: #666; text-transform: uppercase;}
