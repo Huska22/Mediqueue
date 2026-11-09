@@ -47,6 +47,7 @@ $completed = $pdo->query("SELECT qt.queue_no, p.name, qt.arrival_at FROM queue_t
 <html>
 <head>
     <title>Clinician Dashboard - MediQueue</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230d1b8f'/><text x='50%' y='50%' font-size='45' font-family='Arial' font-weight='bold' fill='white' dominant-baseline='central' text-anchor='middle'>MQ</text></svg>">
     <style>
         * { box-sizing: border-box; }
         body { font-family: Arial; margin: 0; background: #f4f6f9; }
@@ -96,7 +97,6 @@ $completed = $pdo->query("SELECT qt.queue_no, p.name, qt.arrival_at FROM queue_t
             <a href="/Mediqueue/clinician/dashboard.php" class="active">Dashboard</a>
             <a href="#waiting-list-section">Waiting List</a>
             <a href="#completed-section">Completed</a>
-            <!-- This link is now updated -->
             <a href="/Mediqueue/clinician/reports.php">Reports</a>
         </div>
         <div class="main">

@@ -1,30 +1,17 @@
 <?php
-date_default_timezone_set('Africa/Nairobi');
 require_once __DIR__ . '/../config/db.php';
 
-// Auto-refresh every 5 seconds
 header("Refresh: 5");
 
-$nowServing = $pdo->query("
-    SELECT qt.queue_no, qt.service_point
-    FROM queue_tickets qt
-    WHERE qt.status = 'serving'
-    LIMIT 1
-")->fetch();
-
-$nextThree = $pdo->query("
-    SELECT queue_no FROM queue_tickets
-    WHERE status = 'waiting'
-    ORDER BY arrival_at ASC
-    LIMIT 3
-")->fetchAll();
-
+$nowServing = $pdo->query("SELECT qt.queue_no, qt.service_point FROM queue_tickets qt WHERE qt.status = 'serving' LIMIT 1")->fetch();
+$nextThree = $pdo->query("SELECT queue_no FROM queue_tickets WHERE status = 'waiting' ORDER BY arrival_at ASC LIMIT 3")->fetchAll();
 $nextList = array_map(fn($r) => $r['queue_no'], $nextThree);
 ?>
 <!DOCTYPE html>
 <html>
 <head>
     <title>MediQueue Display</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230d1b8f'/><text x='50%' y='50%' font-size='45' font-family='Arial' font-weight='bold' fill='white' dominant-baseline='central' text-anchor='middle'>MQ</text></svg>">
     <style>
         body { font-family: Arial, sans-serif; background: #0a1466; color: white; margin: 0; padding: 0; min-height: 100vh; }
         .header { background: #060f3d; padding: 25px; text-align: center; font-size: 36px; font-weight: bold; letter-spacing: 2px; }
@@ -55,9 +42,7 @@ $nextList = array_map(fn($r) => $r['queue_no'], $nextThree);
             <?php if (empty($nextList)): ?>
                 <span style="font-size:32px; color:#7f94d8;">No patients waiting</span>
             <?php else: ?>
-                <?php foreach ($nextList as $n): ?>
-                    <span><?= htmlspecialchars($n) ?></span>
-                <?php endforeach; ?>
+                <?php foreach ($nextList as $n): ?><span><?= htmlspecialchars($n) ?></span><?php endforeach; ?>
             <?php endif; ?>
         </div>
     </div>
